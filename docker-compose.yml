@@ -1,0 +1,10 @@
+version: '3'
+
+services:
+  python-toolkit:
+    image: python-toolkit:1.0.0
+    volumes:
+      - ./:/twine_delivery
+    container_name: "twine_delivery_cn"
+    restart: unless-stopped
+    command: bash -c "while true; do sleep 1; done"
