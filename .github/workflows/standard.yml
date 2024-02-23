@@ -61,7 +61,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: applicative_artifact
-          path: dist/twine_delivery-0.0.0-py3-none-any.whl
+          path: dist/twine_delivery-0.0.2-py3-none-any.whl
 
   delivery:
     needs:
