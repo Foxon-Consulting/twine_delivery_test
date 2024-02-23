@@ -61,7 +61,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: applicative_artifact
-          path: dist/twine_delivery-0.0.2-py3-none-any.whl
+          path: dist/twine_delivery-0.0.0-py3-none-any.whl
 
   delivery:
     needs:
@@ -75,7 +75,13 @@ jobs:
         with:
           name: applicative_artifact
           path: ./delivery/
-
+      - name: Tag image
+        run: |
+          if [ $GITHUB_REF_TYPE == 'tag' ]; then
+            mv twine_delivery-0.0.0-py3-none-any.whl twine_delivery-${GITHUB_REF_NAME}-py3-none-any.whl
+          else
+            mv twine_delivery-0.0.0-py3-none-any.whl twine_delivery-${GITHUB_SHA}-py3-none-any.whl
+          fi
       - name: Delivery Artifact into aws artifactory
         # write github actions with twine
         run: |
@@ -84,7 +90,6 @@ jobs:
           export TWINE_USERNAME=aws
           export TWINE_PASSWORD=`aws codeartifact get-authorization-token --domain foxonconsulting --domain-owner 039130791457 --region eu-west-1 --query authorizationToken --output text`
           export TWINE_REPOSITORY_URL=`aws codeartifact get-repository-endpoint --domain foxonconsulting --domain-owner 039130791457 --repository general --region eu-west-1 --format pypi --query repositoryEndpoint --output text`
-          ls -la
           twine upload --repository-url $TWINE_REPOSITORY_URL ./delivery/*
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
