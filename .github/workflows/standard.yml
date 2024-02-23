@@ -74,7 +74,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           # name: ${{ inputs.artifact-name }}
-          name: applicative_artifact
+          name: applicative_artifact.zip
           path: ./delivery/
 
       - name: Delivery Artifact into aws artifactory
