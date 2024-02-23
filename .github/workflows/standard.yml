@@ -60,11 +60,12 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-artifact@v3
         with:
-          name: ${{ inputs.artifact-name }}
-          path: /tmp/${{ inputs.artifact-name }}.tar
+          name: artifact.tar
+          path: /tmp/artifact.tar
 
   delivery:
-    # needs:
+    needs:
+      - build
     #   - releasing
     if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
@@ -72,7 +73,8 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-artifact@v3
         with:
-          name: ${{ inputs.artifact-name }}
+          # name: ${{ inputs.artifact-name }}
+          name: artifact.tar
           path: ./delivery/
 
       - name: Delivery Artifact into aws artifactory
@@ -83,6 +85,7 @@ jobs:
           export TWINE_USERNAME=aws
           export TWINE_PASSWORD=`aws codeartifact get-authorization-token --domain foxonconsulting --domain-owner 039130791457 --region eu-west-1 --query authorizationToken --output text`
           export TWINE_REPOSITORY_URL=`aws codeartifact get-repository-endpoint --domain foxonconsulting --domain-owner 039130791457 --repository general --region eu-west-1 --format pypi --query repositoryEndpoint --output text`
+          aws codeartifact login --tool twine --repository general --domain foxonconsulting --domain-owner 039130791457 --region eu-west-1
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
