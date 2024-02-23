@@ -14,5 +14,6 @@ class My_first_scriptTest(unittest.TestCase):
 
     def test_my_first_script(self):
         self.assertEqual(
-            _my_first_script("green", "blue"), {"argA": "green", "argB": "blue"}
+            _my_first_script("green", "blue"),
+            {"argA": "green", "argB": "blue"},
         )
