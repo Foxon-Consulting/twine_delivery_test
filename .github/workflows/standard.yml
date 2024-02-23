@@ -42,7 +42,8 @@ jobs:
     # needs: lint
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - name: Checkout
+        uses: actions/checkout@v2
       - name: Set up Python ${{ inputs.python_version }}
         uses: actions/setup-python@v2
         with:
@@ -72,25 +73,29 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: ${{ inputs.artifact-name }}
-          path:
+          path: ./delivery/
 
-      - name: delivery
+      - name: Delivery Artifact into aws artifactory
+        # write github actions with twine
         run: |
-          # Install Twine
+          aws codeartifact login --tool twine --domain foxonconsulting --domain-owner 039130791457 --repository general --region eu-west-1
           pip install twine
+          export TWINE_USERNAME=aws
+          export TWINE_PASSWORD=`aws codeartifact get-authorization-token --domain foxonconsulting --domain-owner 039130791457 --region eu-west-1 --query authorizationToken --output text`
+          export TWINE_REPOSITORY_URL=`aws codeartifact get-repository-endpoint --domain foxonconsulting --domain-owner 039130791457 --repository general --region eu-west-1 --format pypi --query repositoryEndpoint --output text`
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: eu-west-1
 
-          # Upload the artifact to the AWS private PyPI repository
-          twine upload
 
 
-
-
-  deployment:
-    needs:
-      - releasing
-      - delivery
-    if: github.ref == 'refs/heads/dev'
-    permissions:
-      contents: write
-      pull-requests: write
-      uses: Foxon-Consulting/github-actions/.github/workflows/python_deployment.yml@main
+  # deployment:
+  #   needs:
+  #     - releasing
+  #     - delivery
+  #   if: github.ref == 'refs/heads/dev'
+  #   permissions:
+  #     contents: write
+  #     pull-requests: write
+  #     uses: Foxon-Consulting/github-actions/.github/workflows/python_deployment.yml@main
