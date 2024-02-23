@@ -73,7 +73,7 @@ jobs:
       - name: Download artifact
         uses: actions/download-artifact@v3
         with:
-          name: applicative_artifact.zip
+          name: applicative_artifact
           path: ./delivery/
 
       - name: Delivery Artifact into aws artifactory
