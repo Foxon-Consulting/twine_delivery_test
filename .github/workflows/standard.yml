@@ -74,7 +74,7 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: applicative_artifact
-          path: ./delivery/
+          path: ./delivery
       - name: Tag image
         run: |
           if [ $GITHUB_REF_TYPE == 'tag' ]; then
@@ -90,7 +90,7 @@ jobs:
           export TWINE_USERNAME=aws
           export TWINE_PASSWORD=`aws codeartifact get-authorization-token --domain foxonconsulting --domain-owner 039130791457 --region eu-west-1 --query authorizationToken --output text`
           export TWINE_REPOSITORY_URL=`aws codeartifact get-repository-endpoint --domain foxonconsulting --domain-owner 039130791457 --repository general --region eu-west-1 --format pypi --query repositoryEndpoint --output text`
-          twine upload --repository-url $TWINE_REPOSITORY_URL ./delivery/*
+          twine upload --repository-url $TWINE_REPOSITORY_URL ./delivery/twine_delivery-${GITHUB_SHA}-py3-none-any.whl
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
