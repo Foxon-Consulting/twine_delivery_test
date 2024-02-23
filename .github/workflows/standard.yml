@@ -78,9 +78,9 @@ jobs:
       - name: Tag image
         run: |
           if [ $GITHUB_REF_TYPE == 'tag' ]; then
-            mv twine_delivery-0.0.0-py3-none-any.whl twine_delivery-${GITHUB_REF_NAME}-py3-none-any.whl
+            mv ./delivery/twine_delivery-0.0.0-py3-none-any.whl twine_delivery-${GITHUB_REF_NAME}-py3-none-any.whl
           else
-            mv twine_delivery-0.0.0-py3-none-any.whl twine_delivery-${GITHUB_SHA}-py3-none-any.whl
+            mv ./delivery/twine_delivery-0.0.0-py3-none-any.whl twine_delivery-${GITHUB_SHA}-py3-none-any.whl
           fi
       - name: Delivery Artifact into aws artifactory
         # write github actions with twine
