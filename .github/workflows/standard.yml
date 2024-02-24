@@ -78,10 +78,10 @@ jobs:
       - name: Tag image
         run: |
           if [ $GITHUB_REF_TYPE == 'tag' ]; then
-            mv ./delivery/twine_delivery-0.0.0-py3-none-any.whl twine_delivery-0.0.5-py3-none-any.whl
+            mv ./delivery/twine_delivery-0.0.0-py3-none-any.whl ./delivery/twine_delivery-0.0.5-py3-none-any.whl
             echo "TAG"
           else
-            mv ./delivery/twine_delivery-0.0.0-py3-none-any.whl twine_delivery-0.0.5-py3-none-any.whl
+            mv ./delivery/twine_delivery-0.0.0-py3-none-any.whl ./delivery/twine_delivery-0.0.5-py3-none-any.whl
             echo "SHA"
           fi
       - name: Delivery Artifact into aws artifactory
